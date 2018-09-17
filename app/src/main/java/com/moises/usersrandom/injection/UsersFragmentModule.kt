@@ -3,6 +3,7 @@ package com.moises.usersrandom.injection
 import android.support.v4.app.Fragment
 import com.moises.usersrandom.injection.scopes.ScopeFragment
 import com.moises.usersrandom.service.users.UsersDataContract
+import com.moises.usersrandom.ui.users.UsersAdapter
 import com.moises.usersrandom.ui.users.UsersFragment
 import com.moises.usersrandom.ui.users.UsersPresenter
 import dagger.Binds
@@ -27,6 +28,12 @@ abstract class UsersFragmentModule {
         @ScopeFragment
         fun provideUsersPresenter(manager: UsersDataContract): UsersPresenter {
             return UsersPresenter(manager)
+        }
+
+        @Provides
+        @ScopeFragment
+        fun provideUsersAdapter(): UsersAdapter {
+            return UsersAdapter()
         }
     }
 }

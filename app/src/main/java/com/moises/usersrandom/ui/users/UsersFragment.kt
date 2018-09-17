@@ -3,6 +3,9 @@ package com.moises.usersrandom.ui.users
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,9 +16,11 @@ import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_users.*
 import javax.inject.Inject
 
-class UsersFragment @Inject constructor(): Fragment(), UsersContract.View {
-
-    @Inject lateinit var presenter: UsersPresenter
+class UsersFragment @Inject constructor() : Fragment(), UsersContract.View {
+    @Inject
+    lateinit var presenter: UsersPresenter
+    @Inject
+    lateinit var adapter: UsersAdapter
 
     private var listenerUsers: OnUsersFragmentListener? = null
 
@@ -34,17 +39,15 @@ class UsersFragment @Inject constructor(): Fragment(), UsersContract.View {
         return inflater.inflate(R.layout.fragment_users, container, false)
     }
 
-    private fun setUp() {
-        button_test.setOnClickListener {
-            Toast.makeText(context, "Test message", Toast.LENGTH_SHORT).show()
-            presenter.loadUsers()
-        }
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUp()
-        //presenter.loadUsers()
+    }
+
+    private fun setUp() {
+        recyclerView.layoutManager = GridLayoutManager(context, 3)
+        recyclerView.adapter = adapter
+        presenter.loadUsers()
     }
 
     override fun onDetach() {
@@ -56,11 +59,21 @@ class UsersFragment @Inject constructor(): Fragment(), UsersContract.View {
         fun onUserClicked(userId: String)
     }
 
+    override fun showLoading() {
+        recyclerView.visibility = View.GONE
+        pbLoading.visibility = View.VISIBLE
+    }
+
     override fun showUsers(users: List<User>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        adapter.addItems(users)
+    }
+
+    override fun hideLoading() {
+        recyclerView.visibility = View.VISIBLE
+        pbLoading.visibility = View.GONE
     }
 
     override fun showError(error: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 }

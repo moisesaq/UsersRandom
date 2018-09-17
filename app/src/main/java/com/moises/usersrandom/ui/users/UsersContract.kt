@@ -7,7 +7,11 @@ interface UsersContract {
 
     interface View {
 
+        fun showLoading()
+
         fun showUsers(users: List<User>)
+
+        fun hideLoading()
 
         fun showError(error: String)
     }

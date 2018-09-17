@@ -5,7 +5,7 @@ import com.moises.usersrandom.injection.MainActivityComponent
 import com.moises.usersrandom.service.APIServices
 import com.moises.usersrandom.service.users.UsersDataContract
 import com.moises.usersrandom.service.users.UsersDataManager
-import com.moises.usersrandom.ui.UsersApp
+import com.moises.usersrandom.UsersApp
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton

@@ -24,13 +24,13 @@ class UsersPresenter
     }
 
     override fun loadUsers() {
-        Log.e(TAG, "LOADDDDDDDDDDDDDDDDDDDD")
+        view.showLoading()
         manager.getUsers()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeBy(
-                        onNext = { Log.d(TAG,"RESULT: ${it.size}") },
-                        onComplete = { Log.d(TAG, "Task completed") },
+                        onNext = { view.showUsers(it) },
+                        onComplete = { view.hideLoading() },
                         onError = { error(it)}
                 ).addTo(compositeDisposable)
     }

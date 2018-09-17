@@ -1,7 +1,7 @@
 package com.moises.usersrandom.injection.app
 
 import com.moises.usersrandom.injection.MainActivityModule
-import com.moises.usersrandom.ui.UsersApp
+import com.moises.usersrandom.UsersApp
 import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Singleton

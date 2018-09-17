@@ -1,4 +1,4 @@
-package com.moises.usersrandom.ui
+package com.moises.usersrandom
 
 import android.app.Activity
 import android.app.Application
