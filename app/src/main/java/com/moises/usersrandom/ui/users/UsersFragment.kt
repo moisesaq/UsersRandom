@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 class UsersFragment @Inject constructor() : Fragment(), UsersContract.View {
     @Inject
-    lateinit var presenter: UsersPresenter
+    lateinit var presenter: UsersContract.Presenter
     @Inject
     lateinit var adapter: UsersAdapter
 

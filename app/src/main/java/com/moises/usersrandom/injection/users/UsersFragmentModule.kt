@@ -1,4 +1,4 @@
-package com.moises.usersrandom.injection
+package com.moises.usersrandom.injection.users
 
 import android.support.v4.app.Fragment
 import com.moises.usersrandom.injection.scopes.ScopeFragment

@@ -2,6 +2,7 @@ package com.moises.usersrandom.injection
 
 import android.app.Activity
 import com.moises.usersrandom.injection.scopes.ScopeActivity
+import com.moises.usersrandom.injection.users.UsersFragmentComponent
 import com.moises.usersrandom.ui.MainActivity
 import com.moises.usersrandom.ui.users.UsersFragment
 import dagger.Binds

@@ -1,4 +1,4 @@
-package com.moises.usersrandom.injection
+package com.moises.usersrandom.injection.users
 
 import com.moises.usersrandom.injection.scopes.ScopeFragment
 import com.moises.usersrandom.ui.users.UsersFragment
