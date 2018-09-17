@@ -4,6 +4,8 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+apply plugin: 'kotlin-kapt'
+
 android {
     compileSdkVersion 28
     defaultConfig {
@@ -20,6 +22,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    kapt {
+        generateStubs = true
+    }
 }
 
 dependencies {
@@ -30,4 +36,21 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+
+    implementation 'com.android.support:design:28.0.0-rc02'
+
+    // Dagger2
+    kapt 'com.google.dagger:dagger-compiler:2.14.1'
+    implementation 'com.google.dagger:dagger-android-support:2.14.1'
+
+    //Rx
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.1'
+    implementation "io.reactivex.rxjava2:rxkotlin:2.3.0"
+    implementation 'com.jakewharton.rxbinding2:rxbinding-appcompat-v7:2.0.0'
+
+    //Retrofit
+    implementation 'com.squareup.retrofit2:converter-moshi:2.3.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.10.0'
+    implementation 'com.jakewharton.retrofit:retrofit2-rxjava2-adapter:1.0.0'
 }
