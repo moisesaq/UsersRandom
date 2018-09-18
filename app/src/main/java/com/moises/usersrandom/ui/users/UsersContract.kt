@@ -2,7 +2,6 @@ package com.moises.usersrandom.ui.users
 
 import com.moises.usersrandom.model.User
 
-
 interface UsersContract {
 
     interface View {

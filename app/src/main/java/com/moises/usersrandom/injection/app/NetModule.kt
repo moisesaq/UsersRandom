@@ -6,6 +6,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Singleton
@@ -39,8 +40,10 @@ object NetModule {
     @Provides
     @Reusable
     @JvmStatic
-    internal fun provideOkHttpClient(): OkHttpClient {
-        return OkHttpClient.Builder().build()
+    internal fun provideOkHttpClient(httpLoggingInterceptor: HttpLoggingInterceptor): OkHttpClient {
+        return OkHttpClient.Builder()
+                .addInterceptor(httpLoggingInterceptor)
+                .build()
     }
 
     @Provides
@@ -48,5 +51,14 @@ object NetModule {
     @JvmStatic
     internal fun provideMoshiConverterFactory(): MoshiConverterFactory {
         return MoshiConverterFactory.create()
+    }
+
+    @Provides
+    @Reusable
+    @JvmStatic
+    internal fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {
+        val httpLoggingInterceptor = HttpLoggingInterceptor()
+        httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+        return httpLoggingInterceptor
     }
 }

@@ -5,24 +5,29 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.bumptech.glide.Glide
 import com.moises.usersrandom.R
 import com.moises.usersrandom.model.User
+import com.moises.usersrandom.ui.base.BaseFragment
 import com.moises.usersrandom.ui.users.UsersFragment
+import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_info_user.*
 import javax.inject.Inject
 
-private const val ARG_PARAM1 = "userId"
+private const val ARG_PARAM1 = "user"
 
-class UserInfoFragment: Fragment(), UserInfoContract.View {
+class UserInfoFragment : BaseFragment(), UserInfoContract.View {
 
-    private var userId: String? = null
+    private var user: User? = null
     @Inject
-    lateinit var presenter: UserInfoContract.Presenter
+    lateinit var presenter: UserInfoPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        AndroidSupportInjection.inject(this)
         super.onCreate(savedInstanceState)
+        presenter.addView(this)
         arguments?.let {
-            userId = it.getString(ARG_PARAM1)
+            user = it.getParcelable(ARG_PARAM1) as User
         }
     }
 
@@ -36,31 +41,55 @@ class UserInfoFragment: Fragment(), UserInfoContract.View {
     }
 
     private fun setUp() {
-        userId?.let { presenter.findUser(it) }
+        changeTitle("User info")
+        showOrHideHomeBackButton(true)
+        loadData()
+    }
+
+    private fun loadData() {
+        user?.let  {
+            if (!it.id.isEmpty())
+                presenter.findUser(it.id)
+            else
+                showUserInfo(it)
+        }
     }
 
     override fun showLoading() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        pbLoading.visibility = View.VISIBLE
     }
 
     override fun showUserInfo(user: User) {
-        tv_name.text = user.name//String.("%s %s", user.name, user.lastname)
+        loadPhoto(user.photo)
+        tvName.text = user.name
+        tvLastname.text = user.lastname
+    }
+
+    private fun loadPhoto(url: String) {
+        Glide.with(ivPhoto.context)
+                .load(url)
+                .into(ivPhoto)
     }
 
     override fun hideLoading() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        pbLoading.visibility = View.GONE
     }
 
     override fun showError(error: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        showMessageInToast(error)
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        showOrHideHomeBackButton(false)
     }
 
     companion object {
         @JvmStatic
-        fun newInstance(param1: String) =
-                UsersFragment().apply {
+        fun newInstance(user: User) =
+                UserInfoFragment().apply {
                     arguments = Bundle().apply {
-                        putString(ARG_PARAM1, param1)
+                        putParcelable(ARG_PARAM1, user)
                     }
                 }
     }

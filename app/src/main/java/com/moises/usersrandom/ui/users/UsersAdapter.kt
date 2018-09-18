@@ -13,10 +13,11 @@ import kotlinx.android.synthetic.main.user_item.view.*
 import javax.inject.Inject
 
 class UsersAdapter
-    @Inject
-    constructor() : RecyclerView.Adapter<UserViewHolder>() {
+@Inject
+constructor() : RecyclerView.Adapter<UserViewHolder>() {
 
     private lateinit var items: List<User>
+    private lateinit var clickListener: (User) -> Unit
 
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): UserViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -29,7 +30,7 @@ class UsersAdapter
     }
 
     override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
-        holder.bind(items[position])
+        holder.bind(items[position], clickListener)
     }
 
     fun addItems(items: List<User>) {
@@ -37,6 +38,9 @@ class UsersAdapter
         notifyDataSetChanged()
     }
 
+    fun addClickListener(listener: (User) -> Unit) {
+        this.clickListener = listener
+    }
 }
 
 class UserViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -44,9 +48,12 @@ class UserViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     private val ivPhoto: ImageView = view.iv_user_photo
     private val tvName: TextView = view.tv_user_name
 
-    fun bind(user: User) {
+    fun bind(user: User, clickListener: (User) -> Unit) {
         tvName.text = user.name
         loadPhoto(user.photo)
+        itemView.setOnClickListener {
+            clickListener(user)
+        }
     }
 
     private fun loadPhoto(url: String) {

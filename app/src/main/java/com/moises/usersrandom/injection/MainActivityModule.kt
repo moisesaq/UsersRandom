@@ -2,6 +2,7 @@ package com.moises.usersrandom.injection
 
 import android.app.Activity
 import com.moises.usersrandom.injection.scopes.ScopeActivity
+import com.moises.usersrandom.injection.userInfo.UserInfoFragmentComponent
 import com.moises.usersrandom.injection.users.UsersFragmentComponent
 import com.moises.usersrandom.ui.MainActivity
 import com.moises.usersrandom.ui.users.UsersFragment
@@ -12,7 +13,7 @@ import dagger.android.ActivityKey
 import dagger.android.AndroidInjector
 import dagger.multibindings.IntoMap
 
-@Module(subcomponents = arrayOf(UsersFragmentComponent::class))
+@Module(subcomponents = [UsersFragmentComponent::class, UserInfoFragmentComponent::class])
 abstract class MainActivityModule {
 
     @Binds

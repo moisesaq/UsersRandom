@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="padding_default">0dp</dimen>
+    <dimen name="padding_min">5dp</dimen>
+    <dimen name="padding_medium">10dp</dimen>
+    <dimen name="padding_max">15dp</dimen>
+
+    <dimen name="margin_default">0dp</dimen>
+    <dimen name="margin_min">8dp</dimen>
+    <dimen name="margin_medium">16dp</dimen>
+    <dimen name="margin_max">24dp</dimen>
+
+    <dimen name="corner_default">0dp</dimen>
+    <dimen name="corner_small">3dp</dimen>
+
+    <dimen name="elevation_default">0dp</dimen>
+    <dimen name="elevation_small">2dp</dimen>
+    <dimen name="elevation_medium">4dp</dimen>
+</resources>

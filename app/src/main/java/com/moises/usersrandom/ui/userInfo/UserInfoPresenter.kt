@@ -1,5 +1,6 @@
 package com.moises.usersrandom.ui.userInfo
 
+import android.util.Log
 import com.moises.usersrandom.service.users.UsersDataContract
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -9,12 +10,13 @@ import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 class UserInfoPresenter
-    @Inject
-    constructor(private val manager: UsersDataContract): UserInfoContract.Presenter {
+@Inject
+constructor(private val manager: UsersDataContract) : UserInfoContract.Presenter {
 
     companion object {
         const val TAG = "UsersPresenter"
     }
+
     private lateinit var view: UserInfoContract.View
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
@@ -30,11 +32,17 @@ class UserInfoPresenter
                 .subscribeBy(
                         onNext = { view.showUserInfo(it) },
                         onComplete = { view.hideLoading() },
-                        onError = { error(it)}
+                        onError = { error(it) }
                 ).addTo(compositeDisposable)
     }
 
-    override fun doClear() {
+    private fun error(throwable: Throwable) {
+        Log.e(TAG, throwable.toString())
+        view.hideLoading()
+        view.showError(throwable.localizedMessage);
+    }
 
+    override fun doClear() {
+        compositeDisposable.clear()
     }
 }

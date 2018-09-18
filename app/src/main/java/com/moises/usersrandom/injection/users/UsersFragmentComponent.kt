@@ -6,7 +6,7 @@ import dagger.Subcomponent
 import dagger.android.AndroidInjector
 
 @ScopeFragment
-@Subcomponent(modules = arrayOf(UsersFragmentModule::class))
+@Subcomponent(modules = [UsersFragmentModule::class])
 interface UsersFragmentComponent: AndroidInjector<UsersFragment> {
     @Subcomponent.Builder
     abstract class Builder: AndroidInjector.Builder<UsersFragment>()

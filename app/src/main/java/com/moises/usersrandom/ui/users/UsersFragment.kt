@@ -2,23 +2,20 @@ package com.moises.usersrandom.ui.users
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import com.moises.usersrandom.R
 import com.moises.usersrandom.model.User
+import com.moises.usersrandom.ui.base.BaseFragment
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_users.*
 import javax.inject.Inject
 
-class UsersFragment @Inject constructor() : Fragment(), UsersContract.View {
+class UsersFragment @Inject constructor() : BaseFragment(), UsersContract.View {
     @Inject
-    lateinit var presenter: UsersContract.Presenter
+    lateinit var presenter: UsersPresenter
     @Inject
     lateinit var adapter: UsersAdapter
 
@@ -45,6 +42,10 @@ class UsersFragment @Inject constructor() : Fragment(), UsersContract.View {
     }
 
     private fun setUp() {
+        changeTitle("Users")
+        adapter.addClickListener {
+            user -> listenerUsers?.onUserClicked(user)
+        }
         recyclerView.layoutManager = GridLayoutManager(context, 3)
         recyclerView.adapter = adapter
         presenter.loadUsers()
@@ -53,10 +54,6 @@ class UsersFragment @Inject constructor() : Fragment(), UsersContract.View {
     override fun onDetach() {
         super.onDetach()
         listenerUsers = null
-    }
-
-    interface OnUsersFragmentListener {
-        fun onUserClicked(userId: String)
     }
 
     override fun showLoading() {
@@ -74,6 +71,10 @@ class UsersFragment @Inject constructor() : Fragment(), UsersContract.View {
     }
 
     override fun showError(error: String) {
-        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+        showMessageInToast(error)
     }
+}
+
+interface OnUsersFragmentListener {
+    fun onUserClicked(user: User)
 }

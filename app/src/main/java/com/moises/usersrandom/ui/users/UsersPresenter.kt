@@ -10,12 +10,13 @@ import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 class UsersPresenter
-    @Inject
-    constructor(private val manager: UsersDataContract): UsersContract.Presenter {
+@Inject
+constructor(private val manager: UsersDataContract) : UsersContract.Presenter {
 
     companion object {
         const val TAG = "UsersPresenter"
     }
+
     private lateinit var view: UsersContract.View
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
@@ -31,7 +32,7 @@ class UsersPresenter
                 .subscribeBy(
                         onNext = { view.showUsers(it) },
                         onComplete = { view.hideLoading() },
-                        onError = { error(it)}
+                        onError = { error(it) }
                 ).addTo(compositeDisposable)
     }
 
