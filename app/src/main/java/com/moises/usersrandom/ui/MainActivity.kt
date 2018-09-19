@@ -1,5 +1,7 @@
 package com.moises.usersrandom.ui
 
+import android.content.Context
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -52,5 +54,12 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector,
 
     override fun onUserClicked(user: User) {
         replaceFragment(UserInfoFragment.newInstance(user), true)
+    }
+
+    companion object {
+        @JvmStatic
+        fun start(context: Context) {
+            context.startActivity(Intent(context, MainActivity::class.java))
+        }
     }
 }

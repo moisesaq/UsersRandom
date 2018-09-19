@@ -6,11 +6,12 @@ import com.moises.usersrandom.service.APIServices
 import com.moises.usersrandom.service.users.UsersDataContract
 import com.moises.usersrandom.service.users.UsersDataManager
 import com.moises.usersrandom.UsersApp
+import com.moises.usersrandom.injection.splash.SplashActivityComponent
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
 
-@Module(subcomponents = [MainActivityComponent::class])
+@Module(subcomponents = [SplashActivityComponent::class, MainActivityComponent::class])
 class AppModule {
 
     @Singleton
