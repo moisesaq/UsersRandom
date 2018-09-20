@@ -20,12 +20,12 @@ class SplashPresenter @Inject constructor(): SplashContract.Presenter {
     }
 
     override fun startDelay() {
-        view.startAnimation()
+        view.startEntranceTransition()
         Observable.timer(5, TimeUnit.SECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeBy(
-                    onComplete = { view.stopAnimation() },
+                    onComplete = { view.startExitTransition() },
                     onError = { Log.e("SplashPresenter", it.message) }
                 ).addTo(compositeDisposable)
     }

@@ -12,7 +12,8 @@
         android:id="@+id/imageView"
         android:layout_width="120dp"
         android:layout_height="120dp"
-        android:layout_gravity="top|center_horizontal"
+        android:layout_gravity="center"
+        android:visibility="gone"
         app:srcCompat="@mipmap/dragon_ball_z" />
 
     <Button
@@ -21,5 +22,13 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal|bottom"
         android:text="Animate" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_gravity="center_horizontal|bottom"/>
 
 </FrameLayout>

@@ -4,9 +4,9 @@ interface SplashContract {
 
     interface View {
 
-        fun startAnimation()
+        fun startEntranceTransition()
 
-        fun stopAnimation()
+        fun startExitTransition()
     }
 
     interface Presenter {
