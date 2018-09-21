@@ -32,6 +32,6 @@
         android:visibility="gone"
         android:indeterminate="true"
         android:layout_gravity="center_horizontal|bottom"
-        android:background="@android:color/holo_orange_dark"/>
+        android:background="@drawable/bg_transparent"/>
 
 </FrameLayout>
