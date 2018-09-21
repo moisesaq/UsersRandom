@@ -12,6 +12,7 @@ import com.moises.usersrandom.ui.MainActivity
 import com.moises.usersrandom.utils.*
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_splash.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class SplashActivity : AppCompatActivity(), SplashContract.View {
@@ -31,8 +32,8 @@ class SplashActivity : AppCompatActivity(), SplashContract.View {
         window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
         btnAnimate.setOnClickListener {
             presenter.startDelay()
-            //startExitTransition()
         }
+        presenter.startDelay()
     }
 
     override fun startEntranceTransition() {
@@ -50,12 +51,12 @@ class SplashActivity : AppCompatActivity(), SplashContract.View {
     private fun animateLogo() {
         imageView.scaleIn()
                 .doAfterTerminate {
-                    imageView.rotationYBy( 360f)
+                    imageView.rotationYBy(y = 360f)
                 }.doAfterTerminate {
                     imageView.scaleOut()
                 }.doAfterTerminate {
                     progressBar.visibility = VISIBLE
-                    progressBar.translateX(activityView.width.toFloat(), 0f)
+                    progressBar.translateX(from =  -activityView.width.toFloat(), to = 0f)
                 }
                 .subscribe()
     }
@@ -63,9 +64,12 @@ class SplashActivity : AppCompatActivity(), SplashContract.View {
     override fun startExitTransition() {
         imageView.scale(500, -1f)
                 .doAfterTerminate {
-                    progressBar.translateX(progressBar.x, -activityView.width.toFloat())
+                    progressBar.translateX(from = activityView.x, to = activityView.width.toFloat())
                 }
-                .subscribe()
+                .delay(2, TimeUnit.SECONDS)
+                .subscribe {
+                    goToMainActivity()
+                }
     }
 
     private fun goToMainActivity() {

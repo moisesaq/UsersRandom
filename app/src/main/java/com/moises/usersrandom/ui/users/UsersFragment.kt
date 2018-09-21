@@ -1,7 +1,9 @@
 package com.moises.usersrandom.ui.users
 
 import android.content.Context
+import android.graphics.Rect
 import android.os.Bundle
+import android.support.transition.*
 import android.support.v7.widget.GridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +11,8 @@ import android.view.ViewGroup
 import com.moises.usersrandom.R
 import com.moises.usersrandom.model.User
 import com.moises.usersrandom.ui.base.BaseFragment
+import com.moises.usersrandom.ui.users.adapter.UsersAdapter
+import com.moises.usersrandom.utils.TransitionListener
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_users.*
 import javax.inject.Inject
@@ -43,9 +47,7 @@ class UsersFragment @Inject constructor() : BaseFragment(), UsersContract.View {
 
     private fun setUp() {
         changeTitle("Users")
-        adapter.addClickListener {
-            user -> listenerUsers?.onUserClicked(user)
-        }
+        adapter.addClickListener(this::animateViewClicked)
         recyclerView.layoutManager = GridLayoutManager(context, 3)
         recyclerView.adapter = adapter
         presenter.loadUsers()
@@ -72,6 +74,34 @@ class UsersFragment @Inject constructor() : BaseFragment(), UsersContract.View {
 
     override fun showError(error: String) {
         showMessageInToast(error)
+    }
+
+    private fun animateViewClicked(user: User, clickedView: View) {
+        val viewRec = Rect()
+        clickedView.getGlobalVisibleRect(viewRec)
+
+        val explode = Explode().excludeChildren(clickedView, true)
+        explode.epicenterCallback = object : Transition.EpicenterCallback() {
+            override fun onGetEpicenter(p0: Transition): Rect {
+                return viewRec
+            }
+        }
+
+        val fade = Fade().addTarget(clickedView)
+
+        val set = TransitionSet()
+                .addTransition(explode)
+                .addTransition(fade)
+                .addListener(object : TransitionListener() {
+                    override fun onTransitionEnd(p0: Transition) {
+                        listenerUsers?.onUserClicked(user)
+                    }
+                })
+
+        set.excludeChildren(clickedView, true)
+
+        TransitionManager.beginDelayedTransition(recyclerView, set)
+        recyclerView.adapter = null
     }
 }
 
