@@ -1,11 +1,10 @@
 package com.moises.usersrandom.utils
 
 import android.animation.Animator
-import android.support.transition.Slide
-import android.support.transition.Transition
-import android.support.transition.TransitionManager
-import android.support.transition.TransitionSet
+import android.graphics.Rect
+import android.support.transition.*
 import android.view.Gravity
+import android.view.View
 import android.view.ViewAnimationUtils
 import android.view.ViewGroup
 import io.reactivex.Completable
@@ -35,6 +34,33 @@ fun ViewGroup.slideTopTransition(): Completable {
                     animationSubject.onComplete()
                 }
             })
+    TransitionManager.beginDelayedTransition(this, set)
+    return animationSubject
+}
+
+fun ViewGroup.explodeAndEpicenter(clickedView: View): Completable {
+    val animationSubject = CompletableSubject.create()
+    val viewRec = Rect()
+    clickedView.getGlobalVisibleRect(viewRec)
+    val explode = Explode().excludeChildren(clickedView, true)
+    explode.epicenterCallback = object : Transition.EpicenterCallback() {
+        override fun onGetEpicenter(p0: Transition): Rect {
+            return viewRec
+        }
+    }
+
+    val fade = Fade().addTarget(clickedView)
+    val set = TransitionSet()
+            .addTransition(explode)
+            .addTransition(fade)
+            .addListener(object : TransitionListener() {
+                override fun onTransitionEnd(p0: Transition) {
+                    animationSubject.onComplete()
+                }
+            })
+
+    set.excludeChildren(clickedView, true)
+
     TransitionManager.beginDelayedTransition(this, set)
     return animationSubject
 }

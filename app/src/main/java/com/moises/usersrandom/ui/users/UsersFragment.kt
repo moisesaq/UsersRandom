@@ -13,6 +13,7 @@ import com.moises.usersrandom.model.User
 import com.moises.usersrandom.ui.base.BaseFragment
 import com.moises.usersrandom.ui.users.adapter.UsersAdapter
 import com.moises.usersrandom.utils.TransitionListener
+import com.moises.usersrandom.utils.explodeAndEpicenter
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_users.*
 import javax.inject.Inject
@@ -77,30 +78,10 @@ class UsersFragment @Inject constructor() : BaseFragment(), UsersContract.View {
     }
 
     private fun animateViewClicked(user: User, clickedView: View) {
-        val viewRec = Rect()
-        clickedView.getGlobalVisibleRect(viewRec)
-
-        val explode = Explode().excludeChildren(clickedView, true)
-        explode.epicenterCallback = object : Transition.EpicenterCallback() {
-            override fun onGetEpicenter(p0: Transition): Rect {
-                return viewRec
-            }
-        }
-
-        val fade = Fade().addTarget(clickedView)
-
-        val set = TransitionSet()
-                .addTransition(explode)
-                .addTransition(fade)
-                .addListener(object : TransitionListener() {
-                    override fun onTransitionEnd(p0: Transition) {
-                        listenerUsers?.onUserClicked(user)
-                    }
-                })
-
-        set.excludeChildren(clickedView, true)
-
-        TransitionManager.beginDelayedTransition(recyclerView, set)
+        recyclerView.explodeAndEpicenter(clickedView)
+                .subscribe {
+                    listenerUsers?.onUserClicked(user)
+                }
         recyclerView.adapter = null
     }
 }

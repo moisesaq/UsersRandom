@@ -45,16 +45,14 @@ class SplashActivity : BaseActivity(), SplashContract.View {
     }
 
     private fun animateLogo() {
-        imageView.scaleIn()
-                .doAfterTerminate {
+        imageView.scaleIn().doAfterTerminate {
                     imageView.rotationYBy(y = 360f)
                 }.doAfterTerminate {
                     imageView.scaleOut()
                 }.doAfterTerminate {
                     progressBar.visibility = VISIBLE
                     progressBar.translateX(from =  -activityView.width.toFloat(), to = 0f)
-                }
-                .subscribe()
+                }.subscribe()
     }
 
     override fun startExitTransition() {
