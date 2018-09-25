@@ -1,21 +1,27 @@
 package com.moises.usersrandom.ui.splash
 
+import android.animation.Animator
+import android.os.Build
 import android.os.Bundle
 import android.support.transition.*
+import android.support.v4.content.ContextCompat
+import android.support.v4.content.res.ResourcesCompat
 import android.support.v7.app.AppCompatActivity
+import android.util.DisplayMetrics
 import android.view.Gravity
-import android.view.View.GONE
-import android.view.View.VISIBLE
+import android.view.View.*
+import android.view.ViewAnimationUtils
 import android.view.WindowManager
 import com.moises.usersrandom.R
 import com.moises.usersrandom.ui.MainActivity
+import com.moises.usersrandom.ui.base.BaseActivity
 import com.moises.usersrandom.utils.*
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_splash.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class SplashActivity : AppCompatActivity(), SplashContract.View {
+class SplashActivity : BaseActivity(), SplashContract.View {
 
     @Inject
     lateinit var presenter: SplashPresenter
@@ -31,21 +37,25 @@ class SplashActivity : AppCompatActivity(), SplashContract.View {
     private fun setUp() {
         window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
         btnAnimate.setOnClickListener {
+            //goToMainActivity()
             presenter.startDelay()
+        }
+        btnEndAnimate.setOnClickListener {
+            startAnimationCircularReveal()
         }
         presenter.startDelay()
     }
 
     override fun startEntranceTransition() {
-        val set = TransitionSet()
-                .addTransition(Slide(Gravity.TOP))
-                .addListener(object : TransitionListener() {
-                    override fun onTransitionEnd(p0: Transition) {
-                        animateLogo()
-                    }
-                })
-        TransitionManager.beginDelayedTransition(activityView, set)
-        imageView.visibility = if (imageView.visibility == VISIBLE) GONE else VISIBLE
+        beginTransition()
+    }
+
+    private fun beginTransition() {
+        activityView.slideTopTransition()
+                .subscribe {
+                    animateLogo()
+                }
+        imageView.visibility = VISIBLE
     }
 
     private fun animateLogo() {
@@ -65,15 +75,27 @@ class SplashActivity : AppCompatActivity(), SplashContract.View {
         imageView.scale(500, -1f)
                 .doAfterTerminate {
                     progressBar.translateX(from = activityView.x, to = activityView.width.toFloat())
-                }
-                .delay(2, TimeUnit.SECONDS)
+                }.andThen(progressBar.rotationXBy(x = 360F))
                 .subscribe {
-                    goToMainActivity()
+                    startAnimationCircularReveal()
                 }
     }
 
     private fun goToMainActivity() {
         MainActivity.start(this)
         this.finish()
+    }
+
+    private fun startAnimationCircularReveal() {
+        val cx = width / 2
+        val cy = heght / 2
+        val white = ContextCompat.getColor(this, android.R.color.white)
+        val startRadius = Math.hypot(width.toDouble(), heght.toDouble()).toFloat()
+        val finalRadius = 0F
+        activityView.circleReveal(1000, width, 0, startRadius, finalRadius)
+                .subscribe {
+                    activityView.setBackgroundColor(white)
+                    goToMainActivity()
+                }
     }
 }

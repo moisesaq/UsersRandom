@@ -27,7 +27,9 @@ abstract class MainActivityModule {
         @Provides
         @ScopeActivity
         fun provideUsersFragment(): UsersFragment {
-            return UsersFragment()
+            val frag = UsersFragment()
+            frag.addTransition()
+            return frag
         }
     }
 }

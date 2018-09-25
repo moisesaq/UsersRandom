@@ -11,7 +11,7 @@ class UserParser {
         id.value?.let {
             userId = it
         }
-        return User(userId, name.first, name.last, picture.medium)
+        return User(userId, name.first, name.last, picture.large)
     }
 }
 
@@ -21,7 +21,7 @@ class Name {
 }
 
 class Picture {
-    var medium: String = ""
+    var large: String = ""
 }
 
 class ID {

@@ -1,9 +1,13 @@
 package com.moises.usersrandom.ui.base
 
+import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.ActionBar
 import android.support.v7.app.AppCompatActivity
+import android.transition.Explode
+import android.transition.Slide
+import android.view.Gravity
 import android.view.MenuItem
 import android.widget.Toast
 
@@ -39,5 +43,12 @@ open class BaseFragment : Fragment() {
 
     fun showMessageInToast(message: String) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+    }
+
+    fun addTransition() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            enterTransition = Explode() //Slide(Gravity.END)
+            exitTransition = Slide(Gravity.START)
+        }
     }
 }

@@ -125,6 +125,7 @@ class UserInfoFragment : BaseFragment(), UserInfoContract.View {
         @JvmStatic
         fun newInstance(user: User) =
                 UserInfoFragment().apply {
+                    this.addTransition()
                     arguments = Bundle().apply {
                         putParcelable(ARG_PARAM1, user)
                     }
