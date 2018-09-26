@@ -2,15 +2,10 @@ package com.moises.usersrandom.ui
 
 import android.content.Context
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
-import android.transition.Slide
-import android.view.Gravity
 import android.view.View.VISIBLE
-import android.view.Window
-import android.view.WindowManager
+import android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN
 import com.moises.usersrandom.R
 import com.moises.usersrandom.model.User
 import com.moises.usersrandom.ui.base.BaseActivity
@@ -19,14 +14,13 @@ import com.moises.usersrandom.ui.users.OnUsersFragmentListener
 import com.moises.usersrandom.ui.users.UsersFragment
 import com.moises.usersrandom.utils.appear
 import com.moises.usersrandom.utils.circleReveal
-import com.moises.usersrandom.utils.scale
 import dagger.android.AndroidInjection
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
+import io.reactivex.Completable
 import io.reactivex.Observable
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_splash.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -41,19 +35,15 @@ class MainActivity : BaseActivity(), HasSupportFragmentInjector,
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
-        with(window) {
-            requestFeature(Window.FEATURE_CONTENT_TRANSITIONS)
-            enterTransition = Slide(Gravity.END)
-        }
         setContentView(R.layout.activity_main)
-        setUpActionBar()
+        setUp()
     }
 
-
-    private fun setUpActionBar() {
+    private fun setUp() {
+        showOrHideStatusBar(false)
         setSupportActionBar(toolbar)
-        supportActionBar?.let {
-            it.setHomeButtonEnabled(true)
+        supportActionBar?.run {
+            setHomeButtonEnabled(true)
         }
         startAnimationCircularReveal()
     }
@@ -62,12 +52,8 @@ class MainActivity : BaseActivity(), HasSupportFragmentInjector,
         val transaction = supportFragmentManager.beginTransaction()
         if (addToStack)
             transaction.addToBackStack(fragment::class.java.name)
-        transaction.replace(R.id.content_main, fragment)
+        transaction.replace(R.id.mainView, fragment)
         transaction.commit()
-    }
-
-    override fun supportFragmentInjector(): AndroidInjector<Fragment> {
-        return injector
     }
 
     override fun onUserClicked(user: User) {
@@ -75,15 +61,35 @@ class MainActivity : BaseActivity(), HasSupportFragmentInjector,
     }
 
     private fun startAnimationCircularReveal() {
-        val finalRadius = Math.hypot(width.toDouble(), heght.toDouble()).toFloat()
-        Observable.timer(1, TimeUnit.SECONDS).flatMapCompletable {
-                content_main.circleReveal(700, 0, 0, 0F, finalRadius)
-                }.doAfterTerminate {
-                    toolbar.visibility = VISIBLE
-                    toolbar.appear()
-                }.subscribe {
+        Observable.timer(1, TimeUnit.SECONDS)
+                .flatMapCompletable { startCircleReveal() }
+                .doAfterTerminate { animateToolbar() }
+                .subscribe {
+                    mainView.setBackgroundColor(colorWhite)
                     replaceFragment(usersFragment, false)
                 }
+    }
+
+    private fun startCircleReveal(): Completable {
+        val finalRadius = Math.hypot(width.toDouble(), heght.toDouble()).toFloat()
+        return mainView.circleReveal(700, 0, 0, 0F, finalRadius)
+    }
+
+    private fun animateToolbar(): Completable {
+        showOrHideStatusBar(true)
+        return appBarLayout.run { visibility = VISIBLE; appear(500) }
+    }
+
+    private fun showOrHideStatusBar(visibility: Boolean) {
+        if (visibility) {
+            window.clearFlags(FLAG_FULLSCREEN)
+        } else {
+            window.addFlags(FLAG_FULLSCREEN)
+        }
+    }
+
+    override fun supportFragmentInjector(): AndroidInjector<Fragment> {
+        return injector
     }
 
     companion object {

@@ -1,6 +1,7 @@
 package com.moises.usersrandom.ui.userInfo
 
 import com.moises.usersrandom.model.User
+import io.reactivex.disposables.CompositeDisposable
 
 interface UserInfoContract {
 
@@ -21,6 +22,8 @@ interface UserInfoContract {
 
         fun findUser(id: String)
 
-        fun doClear()
+        fun composite(): CompositeDisposable
+
+        fun doDispose()
     }
 }

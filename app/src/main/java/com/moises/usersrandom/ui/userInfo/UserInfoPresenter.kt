@@ -38,11 +38,15 @@ constructor(private val manager: UsersDataContract) : UserInfoContract.Presenter
 
     private fun error(throwable: Throwable) {
         Log.e(TAG, throwable.toString())
-        view.hideLoading()
-        view.showError(throwable.localizedMessage);
+        view.run {
+            hideLoading()
+            showError(throwable.localizedMessage)
+        }
     }
 
-    override fun doClear() {
+    override fun composite(): CompositeDisposable = compositeDisposable
+
+    override fun doDispose() {
         compositeDisposable.clear()
     }
 }

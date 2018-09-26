@@ -47,7 +47,7 @@ open class BaseFragment : Fragment() {
 
     fun addTransition() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            enterTransition = Explode()//Slide(Gravity.END)
+            enterTransition = Slide(Gravity.END)
             exitTransition = Slide(Gravity.START)
         }
     }

@@ -22,6 +22,8 @@ abstract class UserInfoFragmentModule {
     abstract fun bindUserInfoFragmentInjectorFactory(builder: UserInfoFragmentComponent.Builder):
             AndroidInjector.Factory<out Fragment>
 
+    @Binds
+    abstract fun bindUserInfoPresenter(presenter: UserInfoPresenter): UserInfoContract.Presenter
     @Module
     object UserInfoFragmentModule {
         @Provides

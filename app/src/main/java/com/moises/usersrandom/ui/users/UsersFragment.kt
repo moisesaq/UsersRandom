@@ -1,9 +1,7 @@
 package com.moises.usersrandom.ui.users
 
 import android.content.Context
-import android.graphics.Rect
 import android.os.Bundle
-import android.support.transition.*
 import android.support.v7.widget.GridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
@@ -12,19 +10,21 @@ import com.moises.usersrandom.R
 import com.moises.usersrandom.model.User
 import com.moises.usersrandom.ui.base.BaseFragment
 import com.moises.usersrandom.ui.users.adapter.UsersAdapter
-import com.moises.usersrandom.utils.TransitionListener
 import com.moises.usersrandom.utils.explodeAndEpicenter
 import dagger.android.support.AndroidSupportInjection
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.fragment_users.*
 import javax.inject.Inject
 
 class UsersFragment @Inject constructor() : BaseFragment(), UsersContract.View {
     @Inject
-    lateinit var presenter: UsersPresenter
+    lateinit var presenter: UsersContract.Presenter
     @Inject
-    lateinit var adapter: UsersAdapter
+    lateinit var usersAdapter: UsersAdapter
 
     private var listenerUsers: OnUsersFragmentListener? = null
+    private var compositeDisposable = CompositeDisposable()
 
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
@@ -48,15 +48,19 @@ class UsersFragment @Inject constructor() : BaseFragment(), UsersContract.View {
 
     private fun setUp() {
         changeTitle("Users")
-        adapter.addClickListener(this::animateViewClicked)
-        recyclerView.layoutManager = GridLayoutManager(context, 3)
-        recyclerView.adapter = adapter
+        usersAdapter.addClickListener(this::animateViewClicked)
+        recyclerView.run {
+            layoutManager = GridLayoutManager(context, 3)
+            adapter = usersAdapter
+        }
         presenter.loadUsers()
     }
 
     override fun onDetach() {
         super.onDetach()
         listenerUsers = null
+        compositeDisposable.dispose()
+        presenter.doDispose()
     }
 
     override fun showLoading() {
@@ -65,7 +69,7 @@ class UsersFragment @Inject constructor() : BaseFragment(), UsersContract.View {
     }
 
     override fun showUsers(users: List<User>) {
-        adapter.addItems(users)
+        usersAdapter.addItems(users)
     }
 
     override fun hideLoading() {
@@ -79,9 +83,8 @@ class UsersFragment @Inject constructor() : BaseFragment(), UsersContract.View {
 
     private fun animateViewClicked(user: User, clickedView: View) {
         recyclerView.explodeAndEpicenter(clickedView)
-                .subscribe {
-                    listenerUsers?.onUserClicked(user)
-                }
+                .subscribe { listenerUsers?.onUserClicked(user) }
+                .addTo(compositeDisposable)
         recyclerView.adapter = null
     }
 }
