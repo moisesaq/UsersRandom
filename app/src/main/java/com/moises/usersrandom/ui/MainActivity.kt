@@ -1,10 +1,16 @@
 package com.moises.usersrandom.ui
 
+import android.app.Activity
+import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.transition.Explode
+import android.transition.Slide
+import android.view.Gravity
 import android.view.View.VISIBLE
+import android.view.Window
 import android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN
 import com.moises.usersrandom.R
 import com.moises.usersrandom.model.User
@@ -36,8 +42,17 @@ class MainActivity : BaseActivity(), HasSupportFragmentInjector,
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
+        setUpTransition()
         setContentView(R.layout.activity_main)
         setUp()
+    }
+
+    private fun setUpTransition() {
+        window.run {
+            requestFeature(Window.FEATURE_CONTENT_TRANSITIONS)
+            enterTransition = Slide(Gravity.START)
+            exitTransition = Slide(Gravity.END)
+        }
     }
 
     private fun setUp() {
@@ -102,8 +117,9 @@ class MainActivity : BaseActivity(), HasSupportFragmentInjector,
 
     companion object {
         @JvmStatic
-        fun start(context: Context) {
-            context.startActivity(Intent(context, MainActivity::class.java))
+        fun start(activity: Activity) {
+            val intent = Intent(activity, MainActivity::class.java)
+            activity.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(activity).toBundle())
         }
     }
 }

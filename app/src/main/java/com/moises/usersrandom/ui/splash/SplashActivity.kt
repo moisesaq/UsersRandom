@@ -1,7 +1,10 @@
 package com.moises.usersrandom.ui.splash
 
 import android.os.Bundle
+import android.transition.Slide
+import android.view.Gravity
 import android.view.View.*
+import android.view.Window
 import android.view.WindowManager
 import com.moises.usersrandom.R
 import com.moises.usersrandom.ui.MainActivity
@@ -20,9 +23,18 @@ class SplashActivity : BaseActivity(), SplashContract.View {
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
+        setUpTransition()
         setContentView(R.layout.activity_splash)
         presenter.addView(this)
         setUp()
+    }
+
+    private fun setUpTransition() {
+        window.run {
+            requestFeature(Window.FEATURE_CONTENT_TRANSITIONS)
+            enterTransition = Slide(Gravity.END)
+            exitTransition = Slide(Gravity.START)
+        }
     }
 
     private fun setUp() {
@@ -79,6 +91,6 @@ class SplashActivity : BaseActivity(), SplashContract.View {
 
     private fun goToMainActivity() {
         MainActivity.start(this)
-        this.finish()
+        //this.finish()
     }
 }
