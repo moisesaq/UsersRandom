@@ -3,9 +3,12 @@ package com.moises.usersrandom.utils
 import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.animation.PropertyValuesHolder
 import android.support.v4.view.ViewCompat
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.Animation
+import android.view.animation.ScaleAnimation
 import io.reactivex.Completable
 import io.reactivex.subjects.CompletableSubject
 
@@ -34,16 +37,26 @@ fun View.rotationXBy(duration: Long = 500, x: Float): Completable {
 }
 
 fun View.translateX(duration: Long = 500, from: Float, to: Float): Completable {
+    return translate("x", duration, from, to)
+}
+
+fun View.translateY(duration: Long = 500, from: Float, to: Float): Completable {
+    return translate("y", duration, from, to)
+}
+
+private fun View.translate(direction: String, duration: Long = 500, from: Float, to: Float): Completable {
     val animationSubject = CompletableSubject.create()
-    val objectAnimator = ObjectAnimator.ofFloat(this, "x", from, to)
-    objectAnimator.duration = duration
-    objectAnimator.interpolator = AccelerateDecelerateInterpolator()
-    objectAnimator.addListener(object: AnimationListener(){
-        override fun onAnimationEnd(p0: Animator?) {
-            animationSubject.onComplete()
-        }
-    })
-    objectAnimator.start()
+    val objectAnimator = ObjectAnimator.ofFloat(this, direction, from, to)
+    objectAnimator.run {
+        this.duration = duration
+        interpolator = AccelerateDecelerateInterpolator()
+        addListener(object: AnimationListener(){
+            override fun onAnimationEnd(p0: Animator?) {
+                animationSubject.onComplete()
+            }
+        })
+        start()
+    }
     return animationSubject
 }
 
@@ -70,18 +83,71 @@ fun View.scale(duration: Long = 500, xy: Float): Completable {
 
 fun View.appear(duration: Long = 200): Completable {
     val animationSubject = CompletableSubject.create()
-    val anim1 = ObjectAnimator.ofFloat(this, "scaleX", 0f, 1.0f)
-    val anim2 = ObjectAnimator.ofFloat(this, "scaleY", 0f, 1.0f)
+    val animatorX = ObjectAnimator.ofFloat(this, "scaleX", 0f, 1.0f)
+    val animatorY = ObjectAnimator.ofFloat(this, "scaleY", 0f, 1.0f)
 
     val animatorSet = AnimatorSet()
-    animatorSet.playTogether(anim2, anim1)
-    animatorSet.duration = duration
-    animatorSet.interpolator = AccelerateDecelerateInterpolator()
-    animatorSet.addListener(object : AnimationListener() {
-        override fun onAnimationEnd(p0: Animator?) {
-            animationSubject.onComplete()
-        }
-    })
-    animatorSet.start()
+    animatorSet.apply {
+        playTogether(animatorY, animatorX)
+        this.duration = duration
+        interpolator = AccelerateDecelerateInterpolator()
+        addListener(object : AnimationListener() {
+            override fun onAnimationEnd(p0: Animator?) {
+                animationSubject.onComplete()
+            }
+        })
+        start()
+    }
+    return animationSubject
+}
+
+fun View.scaleFromTop(duration: Long = 200): Completable {
+    val animationSubject = CompletableSubject.create()
+    val animation = ScaleAnimation(
+            1f, 1f, // Start and end values for the X axis scaling
+            0f, 1f, // Start and end values for the Y axis scaling
+            Animation.RELATIVE_TO_SELF, 0f, // Pivot point of X scaling
+            Animation.RELATIVE_TO_SELF, 0f) // Pivot point of Y scaling
+
+    animation.run {
+        fillAfter = true
+        this.duration = duration
+        interpolator = AccelerateDecelerateInterpolator()
+        animation.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationEnd(p0: Animation?) {
+                animationSubject.onComplete()
+            }
+
+            override fun onAnimationRepeat(p0: Animation?) {
+            }
+
+            override fun onAnimationStart(p0: Animation?) {
+            }
+        })
+        startAnimation(this)
+    }
+    return animationSubject
+}
+
+fun View.scaleFromCenter(duration: Long = 200): Completable {
+    val animationSubject = CompletableSubject.create()
+    //val valueX = PropertyValuesHolder.ofFloat(View.SCALE_X, 1F, 1F)
+    val valueY = PropertyValuesHolder.ofFloat(View.SCALE_Y, 0F, 1F)
+
+    val animatorY = ObjectAnimator.ofPropertyValuesHolder(this, valueY)
+    val animatorAlpha = ObjectAnimator.ofFloat(this, View.ALPHA, 0f, 1.0f)
+
+    val animatorSet = AnimatorSet()
+    animatorSet.apply {
+        playTogether(animatorY, animatorAlpha)
+        this.duration = duration
+        interpolator = AccelerateDecelerateInterpolator()
+        addListener(object : AnimationListener() {
+            override fun onAnimationEnd(p0: Animator?) {
+                animationSubject.onComplete()
+            }
+        })
+        start()
+    }
     return animationSubject
 }

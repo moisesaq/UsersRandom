@@ -11,14 +11,12 @@ import com.moises.usersrandom.R
 import com.moises.usersrandom.model.User
 import com.moises.usersrandom.ui.base.BaseFragment
 import com.moises.usersrandom.utils.appear
-import com.moises.usersrandom.utils.rotationXBy
-import com.moises.usersrandom.utils.rotationYBy
-import com.moises.usersrandom.utils.translateX
+import com.moises.usersrandom.utils.scaleFromCenter
 import dagger.android.support.AndroidSupportInjection
 import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.fragment_info_user.*
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 private const val ARG_PARAM1 = "user"
@@ -27,7 +25,7 @@ class UserInfoFragment : BaseFragment(), UserInfoContract.View {
 
     private var user: User? = null
     @Inject
-    lateinit var presenter: UserInfoPresenter
+    lateinit var presenter: UserInfoContract.Presenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidSupportInjection.inject(this)
@@ -51,6 +49,9 @@ class UserInfoFragment : BaseFragment(), UserInfoContract.View {
         changeTitle("User info")
         showOrHideHomeBackButton(true)
         loadData()
+        ivPhoto.setOnClickListener {
+            animateCardView().subscribe()
+        }
     }
 
     private fun loadData() {
@@ -68,38 +69,28 @@ class UserInfoFragment : BaseFragment(), UserInfoContract.View {
 
     override fun showUserInfo(user: User) {
         loadPhoto(user.photo)
-        tvName.text = "Name: " + user.name
-        tvLastname.text = "Lastname: " + user.lastname
+        tvName.text = "Name: %s".format(user.name)
+        tvLastname.text = "Lastname: %s".format(user.lastname)
         animateViews()
-        animateImageViewPhoto()
     }
 
     private fun animateViews() {
         ivPhoto.visibility = VISIBLE
-        ivPhoto.appear(400)
-                .doAfterTerminate {
-                    cardViewInfo.visibility = VISIBLE
-                    cardViewInfo.appear()
-                }
-                .delay(1, TimeUnit.SECONDS)
+        ivPhoto.appear(500)
+                .doAfterTerminate { animateCardView() }
                 .observeOn(AndroidSchedulers.mainThread())
-                .doAfterTerminate {
-                    animateTextView(tvName)
-                }.doAfterTerminate {
-                    animateTextView(tvLastname)
-                }
+                .doAfterTerminate { animateTextView(tvName)
+                }.doAfterTerminate { animateTextView(tvLastname) }
                 .subscribe()
+                .addTo(presenter.composite())
     }
 
-    private fun animateImageViewPhoto() {
-        ivPhoto.setOnClickListener {
-            animateTextView(tvName).subscribe()
-        }
+    private fun animateCardView(): Completable {
+        return cardViewInfo.run { visibility = VISIBLE;scaleFromCenter() }
     }
 
     private fun animateTextView(textView: TextView): Completable {
-        textView.visibility = VISIBLE
-        return textView.appear()//textView.rotationYBy(y = 360f)
+        return textView.run { visibility = VISIBLE; appear() }
     }
 
     private fun loadPhoto(url: String) {
@@ -119,13 +110,14 @@ class UserInfoFragment : BaseFragment(), UserInfoContract.View {
     override fun onDetach() {
         super.onDetach()
         showOrHideHomeBackButton(false)
+        presenter.doDispose()
     }
 
     companion object {
         @JvmStatic
         fun newInstance(user: User) =
                 UserInfoFragment().apply {
-                    this.addTransition()
+                    addTransition()
                     arguments = Bundle().apply {
                         putParcelable(ARG_PARAM1, user)
                     }

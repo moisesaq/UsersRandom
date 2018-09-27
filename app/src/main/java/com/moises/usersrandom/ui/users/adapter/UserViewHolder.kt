@@ -35,9 +35,16 @@ class UserViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     private fun animateItemView(delay: Long) {
         Observable.timer(delay, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .doAfterTerminate {
-                    itemView.visibility = View.VISIBLE
-                    itemView.appear()
-                }.subscribe()
+                .doAfterTerminate { animateView() }
+                .subscribe() //TODO: Here, For this create a doDispose
     }
+
+    private fun animateView() {
+        itemView.run {
+            visibility = View.VISIBLE
+            appear()
+        }
+    }
+
+
 }
