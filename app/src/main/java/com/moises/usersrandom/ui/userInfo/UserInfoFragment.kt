@@ -11,12 +11,12 @@ import com.moises.usersrandom.R
 import com.moises.usersrandom.model.User
 import com.moises.usersrandom.ui.base.BaseFragment
 import com.moises.usersrandom.utils.appear
+import com.moises.usersrandom.utils.scaleFromCenter
 import dagger.android.support.AndroidSupportInjection
 import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.fragment_info_user.*
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 private const val ARG_PARAM1 = "user"
@@ -49,6 +49,9 @@ class UserInfoFragment : BaseFragment(), UserInfoContract.View {
         changeTitle("User info")
         showOrHideHomeBackButton(true)
         loadData()
+        ivPhoto.setOnClickListener {
+            animateCardView().subscribe()
+        }
     }
 
     private fun loadData() {
@@ -75,7 +78,6 @@ class UserInfoFragment : BaseFragment(), UserInfoContract.View {
         ivPhoto.visibility = VISIBLE
         ivPhoto.appear(500)
                 .doAfterTerminate { animateCardView() }
-                .delay(1, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .doAfterTerminate { animateTextView(tvName)
                 }.doAfterTerminate { animateTextView(tvLastname) }
@@ -84,7 +86,7 @@ class UserInfoFragment : BaseFragment(), UserInfoContract.View {
     }
 
     private fun animateCardView(): Completable {
-        return cardViewInfo.run { visibility = VISIBLE; appear() }
+        return cardViewInfo.run { visibility = VISIBLE;scaleFromCenter() }
     }
 
     private fun animateTextView(textView: TextView): Completable {

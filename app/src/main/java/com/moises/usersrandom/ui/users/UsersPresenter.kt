@@ -41,6 +41,8 @@ constructor(private val manager: UsersDataContract) : UsersContract.Presenter {
         view.showError(throwable.localizedMessage)
     }
 
+    override fun composite(): CompositeDisposable = compositeDisposable
+
     override fun doDispose() {
         compositeDisposable.clear()
     }

@@ -12,7 +12,6 @@ import com.moises.usersrandom.ui.base.BaseFragment
 import com.moises.usersrandom.ui.users.adapter.UsersAdapter
 import com.moises.usersrandom.utils.explodeAndEpicenter
 import dagger.android.support.AndroidSupportInjection
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.fragment_users.*
 import javax.inject.Inject
@@ -24,7 +23,6 @@ class UsersFragment @Inject constructor() : BaseFragment(), UsersContract.View {
     lateinit var usersAdapter: UsersAdapter
 
     private var listenerUsers: OnUsersFragmentListener? = null
-    private var compositeDisposable = CompositeDisposable()
 
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
@@ -59,7 +57,6 @@ class UsersFragment @Inject constructor() : BaseFragment(), UsersContract.View {
     override fun onDetach() {
         super.onDetach()
         listenerUsers = null
-        compositeDisposable.dispose()
         presenter.doDispose()
     }
 
@@ -84,7 +81,7 @@ class UsersFragment @Inject constructor() : BaseFragment(), UsersContract.View {
     private fun animateViewClicked(user: User, clickedView: View) {
         recyclerView.explodeAndEpicenter(clickedView)
                 .subscribe { listenerUsers?.onUserClicked(user) }
-                .addTo(compositeDisposable)
+                .addTo(presenter.composite())
         recyclerView.adapter = null
     }
 }

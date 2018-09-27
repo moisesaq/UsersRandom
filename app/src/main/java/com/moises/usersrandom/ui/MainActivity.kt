@@ -20,6 +20,7 @@ import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
 import io.reactivex.Completable
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -48,36 +49,39 @@ class MainActivity : BaseActivity(), HasSupportFragmentInjector,
         startAnimationCircularReveal()
     }
 
-    private fun replaceFragment(fragment: Fragment, addToStack: Boolean) {
-        val transaction = supportFragmentManager.beginTransaction()
-        if (addToStack)
-            transaction.addToBackStack(fragment::class.java.name)
-        transaction.replace(R.id.mainView, fragment)
-        transaction.commit()
+    private fun replaceFragment(fragment: Fragment, addToStack: Boolean = true) {
+        supportFragmentManager.beginTransaction().run {
+            if (addToStack)
+                addToBackStack(fragment::class.java.name)
+            replace(R.id.mainView, fragment)
+            commit()
+        }
     }
 
     override fun onUserClicked(user: User) {
-        replaceFragment(UserInfoFragment.newInstance(user), true)
+        replaceFragment(UserInfoFragment.newInstance(user))
     }
 
     private fun startAnimationCircularReveal() {
         Observable.timer(1, TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
                 .flatMapCompletable { startCircleReveal() }
                 .doAfterTerminate { animateToolbar() }
                 .subscribe {
-                    mainView.setBackgroundColor(colorWhite)
+                    changeBackground(colorWhite)
+                    showOrHideStatusBar(true)
                     replaceFragment(usersFragment, false)
                 }
     }
 
     private fun startCircleReveal(): Completable {
+        mainView.visibility = VISIBLE
         val finalRadius = Math.hypot(width.toDouble(), heght.toDouble()).toFloat()
-        return mainView.circleReveal(700, 0, 0, 0F, finalRadius)
+        return mainView.circleReveal(600, 0, 0, 0F, finalRadius)
     }
 
     private fun animateToolbar(): Completable {
-        showOrHideStatusBar(true)
-        return appBarLayout.run { visibility = VISIBLE; appear(500) }
+        return appBarLayout.run { visibility = VISIBLE; appear() }
     }
 
     private fun showOrHideStatusBar(visibility: Boolean) {
@@ -86,6 +90,10 @@ class MainActivity : BaseActivity(), HasSupportFragmentInjector,
         } else {
             window.addFlags(FLAG_FULLSCREEN)
         }
+    }
+
+    private fun changeBackground(color: Int) {
+        mainView.setBackgroundColor(color)
     }
 
     override fun supportFragmentInjector(): AndroidInjector<Fragment> {

@@ -1,28 +1,18 @@
 package com.moises.usersrandom.ui.users
 
 import com.moises.usersrandom.model.User
+import com.moises.usersrandom.ui.base.BasePresenter
+import com.moises.usersrandom.ui.base.BaseView
 
 interface UsersContract {
 
-    //TODO Create a base view
-    interface View {
-
-        fun showLoading()
+    interface View: BaseView {
 
         fun showUsers(users: List<User>)
-
-        fun hideLoading()
-
-        fun showError(error: String)
     }
 
-    //TODO Create a base presenter
-    interface Presenter {
-
-        fun addView(view: View)
+    interface Presenter: BasePresenter<View> {
 
         fun loadUsers()
-
-        fun doDispose()
     }
 }

@@ -62,14 +62,14 @@ class SplashActivity : BaseActivity(), SplashContract.View {
 
     private fun animateProgressBarToExit(): Completable {
         return progressBar.run {
-            translateX(from = splashView.x, to = splashView.width.toFloat()).andThen(rotationYBy(y = 360F))
+            translateX(from = splashView.x, to = splashView.width.toFloat()).andThen(rotationXBy(x = 360F))
         }
     }
 
     private fun startAnimationCircularReveal() {
         val startRadius = Math.hypot(width.toDouble(), heght.toDouble()).toFloat()
         splashView.run {
-            circleReveal(700, width, 0, startRadius, 0F)
+            circleReveal(600, width, 0, startRadius, 0F)
                     .subscribe {
                         setBackgroundColor(colorWhite)
                         goToMainActivity()
