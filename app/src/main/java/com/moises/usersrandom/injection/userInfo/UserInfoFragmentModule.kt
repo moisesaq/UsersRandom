@@ -24,6 +24,7 @@ abstract class UserInfoFragmentModule {
 
     @Binds
     abstract fun bindUserInfoPresenter(presenter: UserInfoPresenter): UserInfoContract.Presenter
+
     @Module
     object UserInfoFragmentModule {
         @Provides

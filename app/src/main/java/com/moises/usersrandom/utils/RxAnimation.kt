@@ -147,7 +147,6 @@ fun View.scaleFromTop(duration: Long = 200): Completable {
 
 fun View.scaleFromCenter(duration: Long = 200): Completable {
     val animationSubject = CompletableSubject.create()
-    //val valueX = PropertyValuesHolder.ofFloat(View.SCALE_X, 1F, 1F)
     val valueY = PropertyValuesHolder.ofFloat(View.SCALE_Y, 0F, 1F)
 
     val animatorY = ObjectAnimator.ofPropertyValuesHolder(this, valueY)
