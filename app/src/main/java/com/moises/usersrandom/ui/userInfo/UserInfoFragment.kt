@@ -11,7 +11,8 @@ import com.moises.usersrandom.R
 import com.moises.usersrandom.model.User
 import com.moises.usersrandom.ui.base.BaseFragment
 import com.moises.usersrandom.utils.appear
-import com.moises.usersrandom.utils.scaleFromCenter
+import com.moises.usersrandom.utils.shake
+import com.moises.usersrandom.utils.translateY
 import dagger.android.support.AndroidSupportInjection
 import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -50,7 +51,7 @@ class UserInfoFragment : BaseFragment(), UserInfoContract.View {
         showOrHideHomeBackButton(true)
         loadData()
         ivPhoto.setOnClickListener {
-            animateCardView().subscribe()
+            ivPhoto.shake(1000).subscribe()
         }
     }
 
@@ -86,7 +87,9 @@ class UserInfoFragment : BaseFragment(), UserInfoContract.View {
     }
 
     private fun animateCardView(): Completable {
-        return cardViewInfo.run { visibility = VISIBLE;scaleFromCenter() }
+        return cardViewInfo.run { visibility = VISIBLE
+            translateY(from = 0f, to = top.toFloat())
+        }
     }
 
     private fun animateTextView(textView: TextView): Completable {

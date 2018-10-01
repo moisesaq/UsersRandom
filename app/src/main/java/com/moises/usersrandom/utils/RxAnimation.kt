@@ -81,6 +81,22 @@ fun View.scale(duration: Long = 500, xy: Float): Completable {
     return animationSubject
 }
 
+fun View.shake(duration: Long = 500): Completable {
+    val animationSubject = CompletableSubject.create()
+    val animator = ObjectAnimator.ofFloat(this, "translationX",
+            0F, 25F, -25F, 25F, -25F,15F, -15F, 6F, -6F, 0F)
+    animator.run {
+        this.duration = duration
+        addListener(object: AnimationListener(){
+            override fun onAnimationEnd(p0: Animator?) {
+                animationSubject.onComplete()
+            }
+        })
+        start()
+    }
+    return animationSubject
+}
+
 fun View.appear(duration: Long = 200): Completable {
     val animationSubject = CompletableSubject.create()
     val animatorX = ObjectAnimator.ofFloat(this, "scaleX", 0f, 1.0f)

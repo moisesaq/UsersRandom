@@ -7,6 +7,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.transition.Explode
+import android.transition.Fade
 import android.transition.Slide
 import android.view.Gravity
 import android.view.View.VISIBLE
@@ -96,7 +97,7 @@ class MainActivity : BaseActivity(), HasSupportFragmentInjector,
     }
 
     private fun animateToolbar(): Completable {
-        return appBarLayout.run { visibility = VISIBLE; appear() }
+        return appBarLayout.run { visibility = VISIBLE; appear(500) }
     }
 
     private fun showOrHideStatusBar(visibility: Boolean) {

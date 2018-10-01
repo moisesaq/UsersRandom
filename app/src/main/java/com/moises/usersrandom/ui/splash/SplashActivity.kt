@@ -1,6 +1,7 @@
 package com.moises.usersrandom.ui.splash
 
 import android.os.Bundle
+import android.transition.Explode
 import android.transition.Slide
 import android.view.Gravity
 import android.view.View.*
@@ -91,6 +92,6 @@ class SplashActivity : BaseActivity(), SplashContract.View {
 
     private fun goToMainActivity() {
         MainActivity.start(this)
-        //this.finish()
+        this.finish()
     }
 }
