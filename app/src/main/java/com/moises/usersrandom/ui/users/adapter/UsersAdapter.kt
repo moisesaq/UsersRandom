@@ -12,7 +12,7 @@ class UsersAdapter
 @Inject
 constructor() : RecyclerView.Adapter<UserViewHolder>() {
 
-    private lateinit var items: List<User>
+    private var items = listOf<User>()
     private lateinit var clickListener: (User, View) -> Unit
     private var delayTime: Long = 0
 

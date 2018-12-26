@@ -1,10 +1,13 @@
 package com.moises.usersrandom.ui.users
 
+import android.arch.lifecycle.Observer
 import android.content.Context
 import android.os.Bundle
 import android.support.v7.widget.GridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import com.moises.usersrandom.R
 import com.moises.usersrandom.model.User
@@ -12,13 +15,12 @@ import com.moises.usersrandom.ui.base.BaseFragment
 import com.moises.usersrandom.ui.users.adapter.UsersAdapter
 import com.moises.usersrandom.utils.explodeAndEpicenter
 import dagger.android.support.AndroidSupportInjection
-import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.fragment_users.*
 import javax.inject.Inject
 
-class UsersFragment @Inject constructor() : BaseFragment(), UsersContract.View {
+class UsersFragment @Inject constructor() : BaseFragment() {
     @Inject
-    lateinit var presenter: UsersContract.Presenter
+    lateinit var viewModel: UsersViewModel
     @Inject
     lateinit var usersAdapter: UsersAdapter
 
@@ -27,7 +29,6 @@ class UsersFragment @Inject constructor() : BaseFragment(), UsersContract.View {
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
-        presenter.addView(this)
         if (context !is OnUsersFragmentListener) {
             throw RuntimeException(context.toString() + " must implement OnUsersFragmentListener")
         }
@@ -51,37 +52,42 @@ class UsersFragment @Inject constructor() : BaseFragment(), UsersContract.View {
             layoutManager = GridLayoutManager(context, 3)
             adapter = usersAdapter
         }
-        presenter.loadUsers()
+        setUpViewModel()
+    }
+
+    private fun setUpViewModel() {
+        viewModel.loading.observe(this, Observer { updateLoading(it!!)})
+        viewModel.users.observe(this, Observer { showUsers(it!!) })
+        viewModel.error.observe(this, Observer { showError(it!!) })
+        viewModel.loadUsers()
     }
 
     override fun onDetach() {
         super.onDetach()
         listenerUsers = null
-        presenter.doDispose()
+        viewModel.doDispose()
     }
 
-    override fun showLoading() {
-        recyclerView.visibility = View.GONE
-        pbLoading.visibility = View.VISIBLE
+    private fun updateLoading(status: Boolean) {
+        recyclerView.run {
+            visibility = if (status) View.GONE else View.VISIBLE
+        }
+        pbLoading.run {
+            visibility = if (status) VISIBLE else GONE
+        }
     }
 
-    override fun showUsers(users: List<User>) {
+    private fun showUsers(users: List<User>) {
         usersAdapter.addItems(users)
     }
 
-    override fun hideLoading() {
-        recyclerView.visibility = View.VISIBLE
-        pbLoading.visibility = View.GONE
-    }
-
-    override fun showError(error: String) {
+    private fun showError(error: String) {
         showMessageInToast(error)
     }
 
     private fun animateViewClicked(user: User, clickedView: View) {
         recyclerView.explodeAndEpicenter(clickedView)
                 .subscribe { listenerUsers?.onUserClicked(user) }
-                .addTo(presenter.composite())
         recyclerView.adapter = null
     }
 }

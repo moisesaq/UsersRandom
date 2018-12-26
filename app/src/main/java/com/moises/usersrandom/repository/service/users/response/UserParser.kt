@@ -1,4 +1,6 @@
-package com.moises.usersrandom.model
+package com.moises.usersrandom.repository.service.users.response
+
+import com.moises.usersrandom.model.User
 
 class UserParser {
 

@@ -1,7 +1,7 @@
 package com.moises.usersrandom.ui.userInfo
 
 import android.util.Log
-import com.moises.usersrandom.service.users.UsersDataContract
+import com.moises.usersrandom.repository.service.users.UsersDataContract
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo

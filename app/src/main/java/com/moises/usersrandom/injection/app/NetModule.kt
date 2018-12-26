@@ -1,7 +1,7 @@
 package com.moises.usersrandom.injection.app
 
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import com.moises.usersrandom.service.APIServices
+import com.moises.usersrandom.repository.service.APIServices
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable

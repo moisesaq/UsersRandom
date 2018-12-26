@@ -1,8 +1,7 @@
-package com.moises.usersrandom.service.users
+package com.moises.usersrandom.repository.service.users
 
 import com.moises.usersrandom.model.User
 import io.reactivex.Observable
-import io.reactivex.Single
 
 interface UsersDataContract {
 

@@ -2,9 +2,9 @@ package com.moises.usersrandom.injection.app
 
 import android.content.Context
 import com.moises.usersrandom.injection.MainActivityComponent
-import com.moises.usersrandom.service.APIServices
-import com.moises.usersrandom.service.users.UsersDataContract
-import com.moises.usersrandom.service.users.UsersDataManager
+import com.moises.usersrandom.repository.service.APIServices
+import com.moises.usersrandom.repository.service.users.UsersDataContract
+import com.moises.usersrandom.repository.service.users.UsersDataManager
 import com.moises.usersrandom.UsersApp
 import com.moises.usersrandom.injection.splash.SplashActivityComponent
 import dagger.Module

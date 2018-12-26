@@ -1,14 +1,13 @@
-package com.moises.usersrandom.service.users
+package com.moises.usersrandom.repository.service.users
 
 import com.moises.usersrandom.model.User
-import com.moises.usersrandom.service.APIServices
+import com.moises.usersrandom.repository.service.APIServices
 import io.reactivex.Observable
-import io.reactivex.Single
 import javax.inject.Inject
 
 class UsersDataManager
     @Inject
-    constructor(private val api: APIServices): UsersDataContract{
+    constructor(private val api: APIServices): UsersDataContract {
 
     override fun getUsers(): Observable<List<User>> {
         return api.users().flatMapObservable { Observable.just(it.results) }

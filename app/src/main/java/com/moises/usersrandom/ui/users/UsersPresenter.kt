@@ -1,7 +1,7 @@
 package com.moises.usersrandom.ui.users
 
 import android.util.Log
-import com.moises.usersrandom.service.users.UsersDataContract
+import com.moises.usersrandom.repository.service.users.UsersDataContract
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -9,6 +9,7 @@ import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
+@Deprecated("Replace with UsersViewModel")
 class UsersPresenter
 @Inject
 constructor(private val manager: UsersDataContract) : UsersContract.Presenter {
@@ -18,6 +19,7 @@ constructor(private val manager: UsersDataContract) : UsersContract.Presenter {
     }
 
     private lateinit var view: UsersContract.View
+
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     override fun addView(view: UsersContract.View) {
