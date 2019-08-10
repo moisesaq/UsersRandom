@@ -6,10 +6,10 @@ import android.support.v7.app.AppCompatActivity
 import android.util.DisplayMetrics
 import com.moises.usersrandom.R
 
-open class BaseActivity: AppCompatActivity() {
+abstract class BaseActivity: AppCompatActivity() {
 
     protected var colorWhite: Int = 0
-    protected var colorPrimary: Int = 0
+    private var colorPrimary: Int = 0
     protected var heght: Int = 0
     protected var width: Int = 0
 

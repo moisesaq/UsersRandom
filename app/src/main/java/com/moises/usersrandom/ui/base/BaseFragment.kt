@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.ActionBar
 import android.support.v7.app.AppCompatActivity
-import android.transition.Explode
 import android.transition.Slide
 import android.view.Gravity
 import android.view.MenuItem
@@ -25,9 +24,7 @@ open class BaseFragment : Fragment() {
     }
 
     fun showOrHideHomeBackButton(enabled: Boolean) {
-        actionBar()?.let {
-            it.setDisplayHomeAsUpEnabled(enabled)
-        }
+        actionBar()?.setDisplayHomeAsUpEnabled(enabled)
     }
 
     private fun actionBar(): ActionBar? {

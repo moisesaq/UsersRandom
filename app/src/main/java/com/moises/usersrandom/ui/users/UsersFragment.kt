@@ -29,7 +29,7 @@ class UsersFragment @Inject constructor() : BaseFragment(), UsersContract.View {
         super.onAttach(context)
         presenter.addView(this)
         if (context !is OnUsersFragmentListener) {
-            throw RuntimeException(context.toString() + " must implement OnUsersFragmentListener")
+            throw RuntimeException("$context must implement OnUsersFragmentListener")
         }
         listenerUsers = context
     }

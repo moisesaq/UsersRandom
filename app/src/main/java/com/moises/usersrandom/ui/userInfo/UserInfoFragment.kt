@@ -65,13 +65,13 @@ class UserInfoFragment : BaseFragment(), UserInfoContract.View {
     }
 
     override fun showLoading() {
-        pbLoading.visibility = View.VISIBLE
+        pbLoading.visibility = VISIBLE
     }
 
     override fun showUserInfo(user: User) {
         loadPhoto(user.photo)
-        tvName.text = "Name: %s".format(user.name)
-        tvLastname.text = "Lastname: %s".format(user.lastname)
+        tvName.text = String.format("Name: %s", user.name)
+        tvLastname.text = String.format("Last name: %s", user.lastname)
         animateViews()
     }
 
